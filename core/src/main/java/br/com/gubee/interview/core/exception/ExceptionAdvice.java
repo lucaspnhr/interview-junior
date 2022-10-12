@@ -94,7 +94,7 @@ public class ExceptionAdvice {
         return status(BAD_GATEWAY).body("message.integration.connection.refused");
     }
 
-    @ExceptionHandler(NotFoundHeroException.class)
+    @ExceptionHandler({NotFoundHeroException.class})
     ResponseEntity<String> handleNotFoundHeroException(NotFoundHeroException e){
         log.error(e.getMessage(), e);
         return status(NOT_FOUND).body(e.getMessage());

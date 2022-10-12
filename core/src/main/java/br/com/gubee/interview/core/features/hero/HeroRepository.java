@@ -1,13 +1,16 @@
 package br.com.gubee.interview.core.features.hero;
 
+import br.com.gubee.interview.core.exception.customException.NotFoundHeroException;
 import br.com.gubee.interview.model.Hero;
 import br.com.gubee.interview.model.PowerStats;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -32,12 +35,16 @@ public class HeroRepository {
             UUID.class);
     }
 
-    Hero retriveById(UUID id){
+    Optional<Hero> retriveById(UUID id){
         final Map<String, Object> params = Map.of("id", id);
-        return namedParameterJdbcTemplate.query(
-                RETRIVE_HERO_BY_ID_QUERY,
-                params,
-                new BeanPropertyRowMapper<>(Hero.class)
-        ).get(0);
+        try{
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(
+                    RETRIVE_HERO_BY_ID_QUERY,
+                    params,
+                    new BeanPropertyRowMapper<>(Hero.class)
+            ));
+        }catch (EmptyResultDataAccessException e){
+            return Optional.empty();
+        }
     }
 }

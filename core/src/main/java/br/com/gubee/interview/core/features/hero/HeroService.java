@@ -28,7 +28,7 @@ public class HeroService {
 
     @Transactional
     public RetriveHeroRequest retriveById(UUID id){
-        Hero retrivedHero = Optional.of(heroRepository.retriveById(id)).orElseThrow(()->{throw new NotFoundHeroException(id);});
+        Hero retrivedHero = (heroRepository.retriveById(id)).orElseThrow(()->{throw new NotFoundHeroException(id);});
         PowerStats powerStats = powerStatsService.retriveById(retrivedHero.getPowerStatsId());
         return RetriveHeroRequest.builder()
                 .heroId(retrivedHero.getId())
