@@ -3,6 +3,7 @@ package br.com.gubee.interview.core.features.hero;
 import br.com.gubee.interview.core.exception.customException.NotFoundHeroException;
 import br.com.gubee.interview.model.Hero;
 import br.com.gubee.interview.model.PowerStats;
+import br.com.gubee.interview.model.request.UpdateHeroRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -23,7 +24,7 @@ public class HeroRepository {
         " VALUES (:name, :race, :powerStatsId) RETURNING id";
     private static final String RETRIVE_HERO_BY_ID_QUERY = "SELECT * FROM hero WHERE id = :id";
     private static final String UPDATE_HERO_QUERY = "UPDATE hero" +
-            " SET name = :name, race = :race,power_stats_id = :powerStatsId,updated_at = now()" +
+            " SET name = :name, race = :race, updated_at = now()" +
             " WHERE id = :id";
     private static final String RETRIVE_ALL_HERO_QUERY = "SELECT * FROM hero";
 
@@ -40,8 +41,8 @@ public class HeroRepository {
             UUID.class);
     }
 
-    Optional<Hero> retriveById(UUID id){
-        final Map<String, Object> params = Map.of("id", id);
+    Optional<Hero> retriveById(UUID heroId){
+        final Map<String, Object> params = Map.of("id", heroId);
         try{
             return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(
                     RETRIVE_HERO_BY_ID_QUERY,
@@ -59,4 +60,16 @@ public class HeroRepository {
                     new BeanPropertyRowMapper<>(Hero.class)
             );
     }
+    int updateHero(UpdateHeroRequest heroToUpdate){
+        final Map<String, Object> params = Map.of("id", heroToUpdate.getId(),
+                "name", heroToUpdate.getName(),
+                "race", heroToUpdate.getRace().name());
+
+        return namedParameterJdbcTemplate.update(
+                UPDATE_HERO_QUERY,
+                params
+        );
+    }
+
+
 }

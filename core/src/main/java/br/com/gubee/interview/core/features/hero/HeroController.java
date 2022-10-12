@@ -3,6 +3,7 @@ package br.com.gubee.interview.core.features.hero;
 import br.com.gubee.interview.model.Hero;
 import br.com.gubee.interview.model.request.CreateHeroRequest;
 import br.com.gubee.interview.model.request.RetriveHeroRequest;
+import br.com.gubee.interview.model.request.UpdateHeroRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -40,5 +41,11 @@ public class HeroController {
     public ResponseEntity<List<RetriveHeroRequest>> findHeroByName(@RequestParam(required = false) String name){
         final List<RetriveHeroRequest> retriveHeroRequest = heroService.retriveByName(name);
         return retriveHeroRequest.size() > 0 ? ok(retriveHeroRequest) : ok().build();
+    }
+
+    @PutMapping()
+    public ResponseEntity<String> updateHero(@RequestBody UpdateHeroRequest updateHeroRequest){
+            heroService.update(updateHeroRequest);
+        return ok().build();
     }
 }

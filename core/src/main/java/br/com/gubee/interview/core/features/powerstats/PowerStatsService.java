@@ -1,6 +1,7 @@
 package br.com.gubee.interview.core.features.powerstats;
 
 import br.com.gubee.interview.model.PowerStats;
+import br.com.gubee.interview.model.request.UpdateHeroRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,5 +22,9 @@ public class PowerStatsService {
     @Transactional
     public PowerStats retriveById(UUID id){
         return powerStatsRepository.retriveById(id);
+    }
+    @Transactional
+    public int update(UpdateHeroRequest updateHeroRequest, UUID powerStatsId) {
+        return powerStatsRepository.updatePowerStats(updateHeroRequest, powerStatsId);
     }
 }
