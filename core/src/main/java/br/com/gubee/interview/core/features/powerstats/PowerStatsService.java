@@ -17,4 +17,9 @@ public class PowerStatsService {
     public UUID create(PowerStats powerStats) {
         return powerStatsRepository.create(powerStats);
     }
+
+    @Transactional
+    public PowerStats retriveById(UUID id){
+        return powerStatsRepository.retriveById(id);
+    }
 }

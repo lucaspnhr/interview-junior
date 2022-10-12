@@ -1,5 +1,6 @@
 package br.com.gubee.interview.core.exception;
 
+import br.com.gubee.interview.core.exception.customException.NotFoundHeroException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,4 +93,12 @@ public class ExceptionAdvice {
         log.error(e.getMessage(), e);
         return status(BAD_GATEWAY).body("message.integration.connection.refused");
     }
+
+    @ExceptionHandler(NotFoundHeroException.class)
+    ResponseEntity<String> handleNotFoundHeroException(NotFoundHeroException e){
+        log.error(e.getMessage(), e);
+        return status(NOT_FOUND).body(e.getMessage());
+    }
+
+
 }

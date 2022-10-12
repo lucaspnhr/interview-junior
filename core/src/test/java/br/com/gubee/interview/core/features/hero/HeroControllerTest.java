@@ -40,7 +40,7 @@ class HeroControllerTest {
     @Test
     void createAHeroWithAllRequiredArguments() throws Exception {
         //given
-        // Convert the hero request into a string JSON format stub.
+        //Convert the hero request into a string JSON format stub.
         final String body = objectMapper.writeValueAsString(createHeroRequest());
 
         //when
