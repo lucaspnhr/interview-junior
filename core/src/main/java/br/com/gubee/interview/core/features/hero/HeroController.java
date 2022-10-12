@@ -31,9 +31,14 @@ public class HeroController {
         return created(URI.create(format("/api/v1/heroes/%s", id))).build();
     }
 
-    @GetMapping("/{heroId}")
-    public ResponseEntity<RetriveHeroRequest> findHeroById(@PathVariable String heroId){
-        final RetriveHeroRequest retriveHeroRequest = heroService.retriveById(UUID.fromString(heroId));
+    @GetMapping("/{id}")
+    public ResponseEntity<RetriveHeroRequest> findHeroById(@PathVariable(required = false) String id){
+        final RetriveHeroRequest retriveHeroRequest = heroService.retriveById(UUID.fromString(id));
         return ok(retriveHeroRequest);
+    }
+    @GetMapping("/filter")
+    public ResponseEntity<List<RetriveHeroRequest>> findHeroByName(@RequestParam(required = false) String name){
+        final List<RetriveHeroRequest> retriveHeroRequest = heroService.retriveByName(name);
+        return retriveHeroRequest.size() > 0 ? ok(retriveHeroRequest) : ok().build();
     }
 }

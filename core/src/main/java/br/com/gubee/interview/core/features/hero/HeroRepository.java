@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,6 +22,10 @@ public class HeroRepository {
         " (name, race, power_stats_id)" +
         " VALUES (:name, :race, :powerStatsId) RETURNING id";
     private static final String RETRIVE_HERO_BY_ID_QUERY = "SELECT * FROM hero WHERE id = :id";
+    private static final String UPDATE_HERO_QUERY = "UPDATE hero" +
+            " SET name = :name, race = :race,power_stats_id = :powerStatsId,updated_at = now()" +
+            " WHERE id = :id";
+    private static final String RETRIVE_ALL_HERO_QUERY = "SELECT * FROM hero";
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -46,5 +51,12 @@ public class HeroRepository {
         }catch (EmptyResultDataAccessException e){
             return Optional.empty();
         }
+    }
+
+    List<Hero> retriveByName(String name){
+            return namedParameterJdbcTemplate.query(
+                    RETRIVE_ALL_HERO_QUERY,
+                    new BeanPropertyRowMapper<>(Hero.class)
+            );
     }
 }

@@ -10,8 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +41,23 @@ public class HeroService {
                 .agility(powerStats.getAgility())
                 .dexterity(powerStats.getDexterity())
                 .intelligence(powerStats.getIntelligence()).build();
+    }
+    @Transactional
+    public List<RetriveHeroRequest> retriveByName(String name){
+        if( name == null || name.isEmpty()){
+            return Collections.emptyList();
+        }
+        List<Hero> retrivedHeros = heroRepository.retriveByName(name);
+        return retrivedHeros.stream().filter((hero) -> hero.getName().contains(name)).map((hero) -> {
+            PowerStats powerStats = powerStatsService.retriveById(hero.getPowerStatsId());
+            return RetriveHeroRequest.builder()
+                    .heroId(hero.getId())
+                    .name(hero.getName())
+                    .race(hero.getRace())
+                    .strength(powerStats.getStrength())
+                    .agility(powerStats.getAgility())
+                    .dexterity(powerStats.getDexterity())
+                    .intelligence(powerStats.getIntelligence()).build();
+        }).collect(Collectors.toList());
     }
 }
