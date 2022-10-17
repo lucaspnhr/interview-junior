@@ -40,7 +40,7 @@ public class HeroService {
             return Collections.emptyList();
         }
         List<Hero> retrivedHeros = heroRepository.retriveByName(name);
-        return retrivedHeros.stream().filter((hero) -> hero.getName().contains(name)).map(this::createRetriveHero).collect(Collectors.toList());
+        return retrivedHeros.stream().filter((hero) -> hero.getName().toLowerCase().contains(name.toLowerCase())).map(this::createRetriveHero).collect(Collectors.toList());
     }
 
     @Transactional
@@ -56,11 +56,17 @@ public class HeroService {
         }
         return retriveHero;
     }
-
-    public int deleteById(UUID id){
+    @Transactional
+    public void deleteById(UUID id){
         Hero hero = heroRepository.retriveById(id).orElseThrow(() -> new NotFoundHeroException(id));
         powerStatsService.deleteById(hero.getPowerStatsId());
-        return heroRepository.delete(hero.getId());
+        heroRepository.delete(hero.getId());
+    }
+    @Transactional
+    public List<RetriveHeroRequest> retriveHerosByIds(UUID firstHero, UUID secondHero) {
+        Hero firstRetrivedHero = (heroRepository.retriveById(firstHero)).orElseThrow(()->{throw new NotFoundHeroException(firstHero);});
+        Hero secondRetrivedHero = (heroRepository.retriveById(secondHero)).orElseThrow(()->{throw new NotFoundHeroException(secondHero);});
+        return List.of(createRetriveHero(firstRetrivedHero),createRetriveHero(secondRetrivedHero));
     }
 
     private RetriveHeroRequest createRetriveHero(Hero hero) {
@@ -74,6 +80,7 @@ public class HeroService {
                 .dexterity(powerStats.getDexterity())
                 .intelligence(powerStats.getIntelligence()).build();
     }
+
 
 
 }

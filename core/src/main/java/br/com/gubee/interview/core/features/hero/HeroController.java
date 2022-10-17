@@ -1,6 +1,6 @@
 package br.com.gubee.interview.core.features.hero;
 
-import br.com.gubee.interview.model.Hero;
+import br.com.gubee.interview.model.request.BattleHeroRequest;
 import br.com.gubee.interview.model.request.CreateHeroRequest;
 import br.com.gubee.interview.model.request.RetriveHeroRequest;
 import br.com.gubee.interview.model.request.UpdateHeroRequest;
@@ -32,8 +32,8 @@ public class HeroController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RetriveHeroRequest> findHeroById(@PathVariable(required = false) String id){
-        final RetriveHeroRequest retriveHeroRequest = heroService.retriveById(UUID.fromString(id));
+    public ResponseEntity<RetriveHeroRequest> findHeroById(@PathVariable(required = false) UUID id){
+        final RetriveHeroRequest retriveHeroRequest = heroService.retriveById(id);
         return ok(retriveHeroRequest);
     }
     @GetMapping("/filter")
@@ -42,6 +42,13 @@ public class HeroController {
         return retriveHeroRequest.size() > 0 ? ok(retriveHeroRequest) : ok().build();
     }
 
+    @GetMapping("/battle")
+    public ResponseEntity<BattleHeroRequest> compareToHeroes(@RequestParam(required = false) UUID firstHero,
+                                                             @RequestParam(required = false) UUID secondHero){
+        List<RetriveHeroRequest> herosToCompare =  heroService.retriveHerosByIds((firstHero), (secondHero));
+        BattleHeroRequest battleHeroRequest = new BattleHeroRequest(herosToCompare.get(0), herosToCompare.get(1));
+        return ok(battleHeroRequest);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<RetriveHeroRequest> updateHero(@PathVariable UUID id, @RequestBody UpdateHeroRequest updateHeroRequest){
