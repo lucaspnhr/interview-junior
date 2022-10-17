@@ -22,7 +22,7 @@ public class PowerStatsRepository {
             " SET strength = :strength, agility = :agility, dexterity = :dexterity, intelligence = :intelligence, updated_at = now()" +
             " WHERE id = :id";
     private static final String RETRIVE_POWER_STATS_BY_ID_QUERY = "SELECT * FROM power_stats WHERE id = :id";
-
+    public static final String DELETE_POWER_STATS_BY_ID = "DELETE FROM power_stats WHERE id = :id RETURNING id";
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     UUID create(PowerStats powerStats) {
@@ -51,6 +51,15 @@ public class PowerStatsRepository {
         return namedParameterJdbcTemplate.update(
                 UPDATE_HERO_QUERY,
                 params
+        );
+    }
+
+    UUID delete(UUID id){
+        Map<String, UUID> param = Map.of("id", id);
+        return namedParameterJdbcTemplate.queryForObject(
+                DELETE_POWER_STATS_BY_ID,
+                param,
+                UUID.class
         );
     }
 }

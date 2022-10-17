@@ -3,6 +3,7 @@ package br.com.gubee.interview.core.features.hero;
 import br.com.gubee.interview.core.exception.customException.NotFoundHeroException;
 import br.com.gubee.interview.model.Hero;
 import br.com.gubee.interview.model.PowerStats;
+import br.com.gubee.interview.model.request.RetriveHeroRequest;
 import br.com.gubee.interview.model.request.UpdateHeroRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class HeroRepository {
 
+    private static final String RETRIVE_ALL_HERO_QUERY = "SELECT * FROM hero";
     private static final String CREATE_HERO_QUERY = "INSERT INTO hero" +
         " (name, race, power_stats_id)" +
         " VALUES (:name, :race, :powerStatsId) RETURNING id";
@@ -26,7 +28,7 @@ public class HeroRepository {
     private static final String UPDATE_HERO_QUERY = "UPDATE hero" +
             " SET name = :name, race = :race, updated_at = now()" +
             " WHERE id = :id";
-    private static final String RETRIVE_ALL_HERO_QUERY = "SELECT * FROM hero";
+    public static final String DELETE_HERO_BY_ID = "DELETE FROM hero WHERE id = :id";
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -60,14 +62,22 @@ public class HeroRepository {
                     new BeanPropertyRowMapper<>(Hero.class)
             );
     }
-    int updateHero(UpdateHeroRequest heroToUpdate){
-        final Map<String, Object> params = Map.of("id", heroToUpdate.getId(),
+    int updateHero(UUID id, UpdateHeroRequest heroToUpdate){
+        final Map<String, Object> params = Map.of("id", id,
                 "name", heroToUpdate.getName(),
                 "race", heroToUpdate.getRace().name());
 
         return namedParameterJdbcTemplate.update(
                 UPDATE_HERO_QUERY,
                 params
+        );
+    }
+
+    int delete(UUID id){
+        Map<String, UUID> param = Map.of("id", id);
+        return namedParameterJdbcTemplate.update(
+                DELETE_HERO_BY_ID,
+                param
         );
     }
 

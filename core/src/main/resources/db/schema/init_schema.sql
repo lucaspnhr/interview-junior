@@ -11,4 +11,5 @@ GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA interview_service TO gubee;
 
 SET SCHEMA 'interview_service';
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+ALTER EXTENSION "uuid-ossp" SET SCHEMA interview_service;
 GRANT EXECUTE ON FUNCTION uuid_generate_v4() TO gubee;

@@ -8,7 +8,7 @@ CREATE TABLE hero
     created_at     TIMESTAMPTZ      NOT NULL DEFAULT now(),
     updated_at     TIMESTAMPTZ      NOT NULL DEFAULT now(),
     CHECK ( race IN ('HUMAN', 'ALIEN', 'DIVINE', 'CYBORG')),
-    CONSTRAINT FK_power_stats FOREIGN KEY (power_stats_id) REFERENCES power_stats(id)
+    CONSTRAINT FK_power_stats FOREIGN KEY (power_stats_id) REFERENCES power_stats(id) ON DELETE CASCADE
 );
 
 

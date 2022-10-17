@@ -27,4 +27,8 @@ public class PowerStatsService {
     public int update(UpdateHeroRequest updateHeroRequest, UUID powerStatsId) {
         return powerStatsRepository.updatePowerStats(updateHeroRequest, powerStatsId);
     }
+    @Transactional
+    public UUID deleteById(UUID powerStatsId) {
+        return powerStatsRepository.delete(powerStatsId);
+    }
 }

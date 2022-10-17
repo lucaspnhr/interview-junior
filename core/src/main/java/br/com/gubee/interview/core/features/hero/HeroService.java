@@ -44,19 +44,29 @@ public class HeroService {
     }
 
     @Transactional
-    public int update(UpdateHeroRequest updateHeroRequest){
-        UUID heroId = updateHeroRequest.getId();
-        Hero hero = (heroRepository.retriveById(heroId)).orElseThrow(() -> {
-            throw new NotFoundHeroException(heroId);
+    public RetriveHeroRequest update(UUID id, UpdateHeroRequest updateHeroRequest){
+        RetriveHeroRequest retriveHero = new RetriveHeroRequest();
+        Hero hero = (heroRepository.retriveById(id)).orElseThrow(() -> {
+            throw new NotFoundHeroException(id);
         });
         powerStatsService.update(updateHeroRequest, hero.getPowerStatsId());
-        return heroRepository.updateHero(updateHeroRequest);
+        int updateReturn = heroRepository.updateHero(id, updateHeroRequest);
+        if(updateReturn > 0){
+            retriveHero = heroRepository.retriveById(id).map(this::createRetriveHero).get();
+        }
+        return retriveHero;
+    }
+
+    public int deleteById(UUID id){
+        Hero hero = heroRepository.retriveById(id).orElseThrow(() -> new NotFoundHeroException(id));
+        powerStatsService.deleteById(hero.getPowerStatsId());
+        return heroRepository.delete(hero.getId());
     }
 
     private RetriveHeroRequest createRetriveHero(Hero hero) {
         PowerStats powerStats = powerStatsService.retriveById(hero.getPowerStatsId());
         return RetriveHeroRequest.builder()
-                .heroId(hero.getId())
+                .id(hero.getId())
                 .name(hero.getName())
                 .race(hero.getRace())
                 .strength(powerStats.getStrength())

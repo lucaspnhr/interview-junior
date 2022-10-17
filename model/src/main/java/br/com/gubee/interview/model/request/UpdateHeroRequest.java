@@ -20,10 +20,6 @@ import static lombok.AccessLevel.PRIVATE;
 public class UpdateHeroRequest {
 
     @NotBlank(message = "message.name.mandatory")
-    @NotNull(message = "message.name.mandatory")
-    private UUID id;
-
-    @NotBlank(message = "message.name.mandatory")
     @Length(min = 1, max = 255, message = "message.name.length")
     private String name;
 

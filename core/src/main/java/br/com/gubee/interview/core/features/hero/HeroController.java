@@ -15,8 +15,7 @@ import java.util.UUID;
 
 import static java.lang.String.format;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.ResponseEntity.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,9 +42,18 @@ public class HeroController {
         return retriveHeroRequest.size() > 0 ? ok(retriveHeroRequest) : ok().build();
     }
 
-    @PutMapping()
-    public ResponseEntity<String> updateHero(@RequestBody UpdateHeroRequest updateHeroRequest){
-            heroService.update(updateHeroRequest);
-        return ok().build();
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RetriveHeroRequest> updateHero(@PathVariable UUID id, @RequestBody UpdateHeroRequest updateHeroRequest){
+        RetriveHeroRequest updatedHero = heroService.update(id, updateHeroRequest);
+        return ok(updatedHero);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteHeroById(@PathVariable UUID id){
+        heroService.deleteById(id);
+        return noContent().build();
+    }
+
+
 }
